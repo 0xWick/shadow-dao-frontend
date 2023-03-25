@@ -1,10 +1,11 @@
 import "./pages.css";
 import React, { useState } from "react";
 import "./pages.css";
+import { Form, Button } from "web3uikit";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Owner = () => {
@@ -446,7 +447,6 @@ const Owner = () => {
   // * Setup Chain & Contract Address
   const address = "0x80A6B117511c6527E57F25D04D9adfee23Ae1B0E";
 
-  // * Functions
   async function withDrawFunds() {
     const signer = new ethers.providers.Web3Provider(
       window.ethereum
@@ -643,7 +643,140 @@ const Owner = () => {
   }
 
   return (
-    <div>Owner Page</div>
+    <>
+      <ToastContainer closeButton={CloseButton} />
+      <div className="contentProposal">
+        <div className="qr-flex ">
+          <div className="flex qr_margin">
+            <Button
+              onClick={withDrawFunds}
+              text="Withdraw"
+              theme="primary"
+              size="large"
+              disabled={withdrawLoading}
+            />
+
+            <div className="margin-30">
+              <div>
+                {isConnected && !subNewMember && (
+                  <Form
+                    // isDisabled={}
+                    buttonConfig={{
+                      isLoading: subNewMember,
+                      loadingText: "Sending...",
+                      text: "New Membership",
+                      theme: "secondary",
+                    }}
+                    data={[
+                      {
+                        inputWidth: "100%",
+                        name: "Enter the User PID",
+                        type: "text",
+                        validation: {
+                          required: true,
+                        },
+                        value: "",
+                      },
+                    ]}
+                    onSubmit={(e) => {
+                      setSubNewMember(true);
+                      createNewMember(e.data[0].inputResult);
+                    }}
+                    title="New MemberShip"
+                  />
+                )}
+
+                {/* Substitue Form */}
+                {subNewMember && (
+                  <Form
+                    isDisabled={true}
+                    buttonConfig={{
+                      text: "Assigning...",
+                      theme: "secondary",
+                    }}
+                    data={[
+                      {
+                        inputWidth: "100%",
+                        name: "Enter the User PID",
+                        type: "text",
+                        validation: {
+                          required: true,
+                        },
+                        value: "",
+                      },
+                    ]}
+                    onSubmit={(e) => {
+                      setSubNewMember(true);
+                      createNewMember(e.data[0].inputResult);
+                    }}
+                    title="New MemberShip"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="margin-30">
+              <div>
+                {isConnected && !subRevokeMember && (
+                  <Form
+                    // isDisabled={}
+                    buttonConfig={{
+                      isLoading: subRevokeMember,
+                      loadingText: "Sending...",
+                      text: "Rewoke Membership",
+                      theme: "secondary",
+                    }}
+                    data={[
+                      {
+                        inputWidth: "100%",
+                        name: "Enter the Address",
+                        type: "text",
+                        validation: {
+                          required: true,
+                        },
+                        value: "",
+                      },
+                    ]}
+                    onSubmit={(e) => {
+                      setSubRevokeMember(true);
+                      rewokeMember(e.data[0].inputResult);
+                    }}
+                    title="Revoke MemberShip"
+                  />
+                )}
+
+                {/* Substitue Form */}
+                {subRevokeMember && (
+                  <Form
+                    isDisabled={true}
+                    buttonConfig={{
+                      text: "Rewoking membership...",
+                      theme: "secondary",
+                    }}
+                    data={[
+                      {
+                        inputWidth: "100%",
+                        name: "Enter the Address",
+                        type: "text",
+                        validation: {
+                          required: true,
+                        },
+                        value: "",
+                      },
+                    ]}
+                    onSubmit={(e) => {
+                      setSubRevokeMember(true);
+                      rewokeMember(e.data[0].inputResult);
+                    }}
+                    title="Revoke MemberShip"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
