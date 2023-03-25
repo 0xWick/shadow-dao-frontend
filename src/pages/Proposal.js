@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
+import "./pages.css";
+import { Tag, Widget, Blockie, Tooltip, Form, Table, Button } from "web3uikit";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { ethers } from "ethers";
+import { ChevronLeft, Matic, CrossCircle } from "@web3uikit/icons";
+
 import { useAccount } from "wagmi";
 const Moralis = require("moralis").default;
 const { EvmChain } = require("@moralisweb3/common-evm-utils");
