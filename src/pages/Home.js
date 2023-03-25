@@ -471,8 +471,10 @@ const Home2 = () => {
   const address = "0x80A6B117511c6527E57F25D04D9adfee23Ae1B0E";
   const chain = EvmChain.MUMBAI;
 
-   // ? Get Status of a proposal
-   async function getStatus(proposalId) {
+  // * Generic Functions
+
+  // ? Get Status of a proposal
+  async function getStatus(proposalId) {
     const functionName = "Proposals";
 
     const proposalOptions = {
@@ -937,10 +939,303 @@ const Home2 = () => {
     }
   }, [isConnected, isMember, userAddress, sub, subDonation]);
 
-
   return (
     <>
-      <div>Home Page</div>
+      <ToastContainer closeButton={CloseButton} />
+      <div className="content">
+        <TabList defaultActiveKey={1} tabStyle="bulbUnion">
+          <Tab tabKey={1} tabName="DAO">
+            <div className="tabContent">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "-30px",
+                }}
+              >
+                {!isMember && (
+                  <Link style={{ textDecoration: "none" }} to="/qr">
+                    <Button text="Please Verify" theme="primary" size="large" />
+                  </Link>
+                )}
+
+                {isConnected && isOwner && (
+                  <Link
+                    style={{ textDecoration: "none", marginLeft: "30px" }}
+                    to="/owner"
+                  >
+                    <Tag
+                      color="purple"
+                      onCancelClick={function noRefCheck() {}}
+                      text="Owner Panel"
+                      tone="dark"
+                      fontSize="20px"
+                      style={{ padding: "15px", marginRight: "5px" }}
+                    />
+                  </Link>
+                )}
+
+                {isConnected && isOwner ? (
+                  <Tag
+                    color="green"
+                    text="DAO Owner"
+                    fontSize="25px"
+                    tone="dark"
+                    width="fit-content"
+                    style={{ padding: "10px 15px", marginLeft: "20px" }}
+                  />
+                ) : (
+                  isConnected &&
+                  isMember && (
+                    <Tag
+                      color="purple"
+                      text="Verified Member"
+                      fontSize="25px"
+                      tone="dark"
+                      width="fit-content"
+                      style={{ padding: "10px 15px" }}
+                    />
+                  )
+                )}
+              </div>
+              <Tag
+                      color="purple"
+                      text="Ghost DAO"
+                      fontSize="25px"
+                      // tone="dark"
+                      width="fit-content"
+                      style={{ padding: "15px 15px" }}
+                    /> 
+              <div className="widgets">
+                <Widget
+                  isLoading={isDisconnected || isLoading}
+                  info={totalP}
+                  title="Proposals Created"
+                  style={{ width: "200%" }}
+                >
+                  {!isLoading && isConnected && isMember && (
+                    <div className="extraWidgetInfo">
+                      <div className="extraTitle">Pass Rate</div>
+                      <div className="progress">
+                        <div
+                          className="progressPercentage"
+                          style={{ width: `${passRate}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
+                </Widget>
+
+                <Widget
+                  isLoading={isDisconnected || isLoading}
+                  info={daoBalance}
+                  title="DAO Treasury Balance"
+                >
+                  <img
+                    style={{ marginTop: "30px" }}
+                    width={"25px"}
+                    height={"25px"}
+                    src={matic}
+                    alt="Logo"
+                  />
+                </Widget>
+
+                <Widget
+                  isLoading={isDisconnected || isLoading}
+                  info={donation}
+                  title="Your Donations:"
+                />
+              </div>
+              <div>
+                {isMember && isConnected && !sub && (
+                  <Form
+                    isDisabled={isLoading}
+                    buttonConfig={{
+                      isLoading: sub,
+                      loadingText: "Submitting Proposal",
+                      text: "Submit",
+                      theme: "secondary",
+                    }}
+                    data={[
+                      {
+                        inputWidth: "100%",
+                        name: "Description",
+                        type: "text",
+                        validation: {
+                          required: true,
+                        },
+                        value: "",
+                      },
+                      {
+                        inputWidth: "20%",
+                        name: "Required Amount",
+                        type: "number",
+                        validation: {
+                          characterMaxLength: 5,
+                          required: true,
+                        },
+                        value: "",
+                      },
+                    ]}
+                    onSubmit={(e) => {
+                      try {
+                        setSub(true);
+                        createProposal(
+                          e.data[0].inputResult,
+                          e.data[1].inputResult
+                        );
+                        // e.preventDefault();
+                      } catch (error) {
+                   
+                      }
+                    }}
+                    title="Create a New Proposal"
+                  />
+                )}
+
+                {/* Substitue Form */}
+                {sub && (
+                  <Form
+                    isDisabled={true}
+                    buttonConfig={{
+                      text: "Submitting...",
+                      theme: "secondary",
+                    }}
+                    data={[
+                      {
+                        inputWidth: "100%",
+                        name: "Description",
+                        type: "text",
+                        validation: {
+                          required: true,
+                        },
+                        value: "",
+                      },
+                      {
+                        inputWidth: "20%",
+                        name: "Required Amount",
+                        type: "number",
+                        validation: {
+                          characterMaxLength: 5,
+                          required: true,
+                        },
+                        value: "",
+                      },
+                    ]}
+                    onSubmit={(e) => {
+                      try {
+                        setSub(true);
+                        createProposal(
+                          e.data[0].inputResult,
+                          e.data[1].inputResult
+                        );
+                        // e.preventDefault();
+                      } catch (error) {
+                 
+                      }
+                    }}
+                    title="Create a New Proposal"
+                  />
+                )}
+              </div>
+              <div style={{ marginTop: "30px" }}>
+                <div
+                  style={{
+                    color: "#68738D",
+                    marginBottom: "20px",
+                    marginTop: "30px",
+                    alignContent: "center",
+                  }}
+                >
+                  Recent Proposals
+                </div>
+                <Table
+                  isLoading={isDisconnected || isLoading}
+                  id={1}
+                  columnsConfig="10% 50% 20% 20%"
+                  data={proposals}
+                  header={[
+                    <span>ID</span>,
+                    <span>Description</span>,
+                    <span>Required Amount </span>,
+                    <span>Status</span>,
+                  ]}
+                  pageSize={6}
+                />
+              </div>
+            </div>
+
+            <div></div>
+          </Tab>
+          <Tab tabKey={2} tabName="Fund DAO">
+            <div className="DAO">
+              <Widget
+                isLoading={isDisconnected || isLoading}
+                info={donation}
+                title="Your Donations:"
+              />
+            </div>
+            {isMember && isConnected && !subDonation && (
+              <Form
+                isDisabled={isLoading}
+                buttonConfig={{
+                  isLoading: subDonation,
+                  loadingText: "Sending...",
+                  text: "FUND",
+                  theme: "secondary",
+                }}
+                data={[
+                  {
+                    inputWidth: "20%",
+                    name: "Amount you wana FUND",
+                    type: "number",
+                    validation: {
+                      characterMaxLength: 5,
+                      required: true,
+                    },
+                    value: "",
+                  },
+                ]}
+                onSubmit={(e) => {
+                  setSubDonation(true);
+                  createDonation(e.data[0].inputResult);
+                }}
+                title="FUND OUR DAO"
+              />
+            )}
+
+            {/* Substitue Form */}
+            {subDonation && (
+              <Form
+                isDisabled={true}
+                buttonConfig={{
+                  text: "Sending...",
+                  theme: "secondary",
+                }}
+                data={[
+                  {
+                    inputWidth: "20%",
+                    name: "Amount you wana FUND",
+                    type: "number",
+                    validation: {
+                      characterMaxLength: 5,
+                      required: true,
+                    },
+                    value: "",
+                  },
+                ]}
+                onSubmit={(e) => {
+                  setSubDonation(true);
+                  createDonation(e.data[0].inputResult);
+                }}
+                title="FUND OUR DAO"
+              />
+            )}
+          </Tab>
+          <Tab tabKey={3} tabName="Docs"></Tab>
+        </TabList>
+      </div>
+      <div className="voting"></div>
     </>
   );
 };

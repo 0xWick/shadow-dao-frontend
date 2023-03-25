@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Proposal from "./pages/Proposal";
 
 import Navigation from "./Navigation";
-import Home2 from "./pages/Home2";
+import Home from "./pages/Home";
 import QR from "./pages/QrVerification";
 import Owner from "./pages/owner";
 
