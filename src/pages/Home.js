@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Moralis = require("moralis").default;
 const { EvmChain } = require("@moralisweb3/common-evm-utils");
 
-const Home2 = () => {
+const Home = () => {
 
 
   const CloseButton = ({ closeToast }) => (
@@ -1240,4 +1240,4 @@ const Home2 = () => {
   );
 };
 
-export default Home2;
+export default Home;
