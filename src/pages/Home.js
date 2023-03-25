@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./pages.css";
+import { TabList, Tab, Widget, Tag, Table, Form, Button } from "web3uikit";
+import { Link } from "react-router-dom";
+import matic from "../images/Polygon_Faucet.png";
+import { useAccount } from "wagmi";
+import { ethers } from "ethers";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const Moralis = require("moralis").default;
+const { EvmChain } = require("@moralisweb3/common-evm-utils");
+
 const Home2 = () => {
 
 
