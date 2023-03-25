@@ -471,7 +471,323 @@ const Proposal = () => {
     // * Setup Chain & Contract Address
     const address = "0x80A6B117511c6527E57F25D04D9adfee23Ae1B0E";
     const chain = EvmChain.MUMBAI;
-  
+    
+    useEffect(() => {
+        if (isConnected) {
+          window.scrollTo(0, 100);
+          if (deadline == true) {
+            window.scrollTo(0, 100);
+          } else {
+            window.scrollTo(0, 70);
+          }
+    
+          async function main() {
+            async function configMoralis() {
+              let moralisInitialized = await Moralis.Core.isStarted;
+    
+              try {
+                if (!moralisInitialized) {
+                  // console.log("Moralis Configured");
+                  await Moralis.start({
+                    apiKey:
+                      "zLYFqOyS9Mc6G8jzDjx3PEPj8WrcktAYrdyt3QTf2ogr4tU5kUSSE1xsTkF4Idyn",
+                    // "0KEpH3iOcb7NF49r9hh40AvjYWeFjxfAY15Zf7mzayVEfM9UW1Bt8ZJpcZbV1N2C",
+                    // ...and any other configuration
+                  });
+                }
+              } catch (error) {
+                // console.log(error)
+              }
+            }
+            // ? Get Votes of current Proposal
+            async function getVotes() {
+              // * Getting ProposalCreated Event
+              const voteEventABI = {
+                anonymous: false,
+                inputs: [
+                  {
+                    indexed: false,
+                    internalType: "uint256",
+                    name: "votesUp",
+                    type: "uint256",
+                  },
+                  {
+                    indexed: false,
+                    internalType: "uint256",
+                    name: "votesDown",
+                    type: "uint256",
+                  },
+                  {
+                    indexed: false,
+                    internalType: "address",
+                    name: "voter",
+                    type: "address",
+                  },
+                  {
+                    indexed: false,
+                    internalType: "uint256",
+                    name: "proposal",
+                    type: "uint256",
+                  },
+                  {
+                    indexed: false,
+                    internalType: "bool",
+                    name: "votedFor",
+                    type: "bool",
+                  },
+                ],
+                name: "newVote",
+                type: "event",
+              };
+    
+              const topic =
+                "0x97a3ed91f0b116dc155f238ac92aa5b825720a7bb096f53156e05d9c8ab6a30a";
+    
+              const EventOptions = {
+                chain: chain,
+                address: address,
+                topic: topic,
+                abi: voteEventABI,
+                // fromBlock: 16162627
+              };
+    
+              const responseEvents = await Moralis.EvmApi.events.getContractEvents(
+                EventOptions
+              );
+              const EveryProposalVotes = responseEvents?.toJSON().result;
+    
+              const results = [];
+    
+              for (let i = 0; i < EveryProposalVotes.length; i++) {
+                if (
+                  Number(EveryProposalVotes[i].data.proposal) ==
+                    proposalDetails.id &&
+                  Number(EveryProposalVotes[i].data.voter) == userAddress
+                ) {
+                  setHasVoted(true);
+                }
+    
+                if (
+                  Number(EveryProposalVotes[i].data.proposal) == proposalDetails.id
+                ) {
+                  results.push(EveryProposalVotes[i]);
+                }
+              }
+    
+              for (let i = 0; i < results.length; i++) {
+                // console.log(results[i])
+              }
+    
+              if (results.length > 0) {
+                setLatestVote(results[0].data);
+                setPercDown(
+                  (
+                    (Number(results[0].data.votesDown) /
+                      (Number(results[0].data.votesDown) +
+                        Number(results[0].data.votesUp))) *
+                    100
+                  ).toFixed(0)
+                );
+                setPercUp(
+                  (
+                    (Number(results[0].data.votesUp) /
+                      (Number(results[0].data.votesDown) +
+                        Number(results[0].data.votesUp))) *
+                    100
+                  ).toFixed(0)
+                );
+              }
+    
+              const votesDirection = results.map((e) => [
+                e.data.voter,
+                e.data.votedFor ? (
+                  <Matic fontSize="24px" />
+                ) : (
+                  <CrossCircle color="red" fontSize="24px" />
+                ),
+              ]);
+    
+              setVotes(votesDirection);
+            }
+    
+            // ? Get Verification of Current User
+            async function getUserVerify() {
+              const ownerFunc = "DAOowner";
+    
+              const ownerOpt = {
+                abi: ContractABI,
+                functionName: ownerFunc,
+                address: address,
+                chain: chain,
+              };
+    
+              const ownerStatus = await Moralis.EvmApi.utils.runContractFunction(
+                ownerOpt
+              );
+              const ownerAddress = ownerStatus?.toJSON();
+    
+              if (ownerAddress == userAddress) {
+                setIsOwner(true);
+                setIsMember(true);
+                // console.log(ownerAddress == userAddress)
+              } else {
+                setIsOwner(false);
+                const functionName = "isMember";
+    
+                const options = {
+                  abi: ContractABI,
+                  functionName: functionName,
+                  address: address,
+                  chain: chain,
+                  params: {
+                    "": userAddress,
+                  },
+                };
+                const statusRaw = await Moralis.EvmApi.utils.runContractFunction(
+                  options
+                );
+                const status = statusRaw?.toJSON();
+    
+                setIsMember(status);
+                // console.log(status)
+              }
+            }
+    
+            // ? Get Status of a proposal
+            async function getStatus(proposalId) {
+              const functionName = "Proposals";
+    
+              const proposalOptions = {
+                abi: ContractABI,
+                functionName: functionName,
+                address: address,
+                chain: chain,
+                params: {
+                  "": proposalId,
+                },
+              };
+    
+              const proposalDetails =
+                await Moralis.EvmApi.utils.runContractFunction(proposalOptions);
+    
+              const result = proposalDetails?.toJSON();
+    
+              let color = "";
+              let text = "";
+              if (result.countConducted && result.passed) {
+                setCountDone(true);
+                color = "green";
+                text = "Passed";
+              } else if (result.countConducted && !result.passed) {
+                setCountDone(true);
+                color = "red";
+                text = "Rejected";
+              } else {
+                setCountDone(false);
+                color = "blue";
+                text = "Ongoing";
+              }
+              setStatus({ color: color, text: text });
+            }
+    
+            // ? Get Deadline of a Proposal
+            async function getDeadline(proposalId) {
+              const functionName = "Proposals";
+    
+              const proposalOptions = {
+                abi: ContractABI,
+                functionName: functionName,
+                address: address,
+                chain: chain,
+                params: {
+                  "": proposalId,
+                },
+              };
+              const proposalDetails =
+                await Moralis.EvmApi.utils.runContractFunction(proposalOptions);
+              const proposal = proposalDetails?.toJSON();
+    
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              const currentBlockNum = await provider.getBlockNumber();
+    
+              if (proposal.deadline <= currentBlockNum) {
+                setDeadline(true);
+              }
+            }
+            setLoading(true);
+            await configMoralis();
+            await getUserVerify();
+    
+            await getDeadline(proposalDetails.id);
+            await getStatus(proposalDetails.id);
+            await getVotes();
+            setLoading(false);
+          }
+          main();
+        }
+      }, [isConnected, userAddress, sub, counting]);
+    
+    
+      // * Functions
+      async function castVote(upDown) {
+        const signer = new ethers.providers.Web3Provider(
+          window.ethereum
+        ).getSigner();
+    
+        const daoVerifier = new ethers.Contract(address, ContractABI, signer);
+    
+        try {
+          const voteTxn = await daoVerifier.voteOnProposal(
+            proposalDetails.id,
+            upDown
+          );
+          await voteTxn.wait();
+          // console.log("Vote Cast Succesfully");
+    
+          const HASH = voteTxn.hash;
+          const url = BaseUrl + HASH;
+          setPolygonScan(url);
+          toast.success("Vote Casted Succesfully", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+    
+          setSub(false);
+        } catch (error) {
+          toast.error("Transaction Failed!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          alert(error.data.message);
+          setSub(false);
+        }
+      }
+    
+      async function countVotes(id) {
+        const signer = new ethers.providers.Web3Provider(
+          window.ethereum
+        ).getSigner();
+    
+        const daoVerifier = new ethers.Contract(address, ContractABI, signer);
+    
+        const countTxn = await daoVerifier.countVotes(id);
+        await countTxn.wait(2);
+    
+        setCounting(false);
+      }
+
     return (
         <div>
             Proposal Page
