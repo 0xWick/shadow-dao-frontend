@@ -788,11 +788,148 @@ const Proposal = () => {
         setCounting(false);
       }
 
-    return (
-        <div>
-            Proposal Page
-        </div>
-    )
+      return (
+        <>
+          <ToastContainer closeButton={CloseButton} />
+          {isConnected && isMember && (
+            <div className="contentProposal">
+              <div className="proposal">
+                <Link className="linkBackHome" to="/">
+                  <div className="backHome">
+                    <ChevronLeft fill="#ffffff" fontSize="20px" />
+                    Overview
+                  </div>
+                </Link>
+    
+                <div>{proposalDetails.description}</div>
+                <div className="proposalOverview">
+                  <Tag color={status.color} text={status.text} />
+                  <div className="proposer">
+                    <span>Proposed By </span>
+                    <Tooltip content={proposalDetails.proposer}>
+                      <Blockie seed={proposalDetails.proposer} />
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
+    
+              <div className="buttons-Wrapper">
+                {deadline && (
+                  <div className="deadlineButton">
+                    <Button
+                      color="red"
+                      text={`Deadline: ${deadline}`}
+                      theme="colored"
+                      loadingText="Calculating"
+                    />
+                  </div>
+                )}
+                {isOwner && deadline && !countDone && (
+                  <div className="countButton">
+                    <Button
+                      disabled={!isOwner || counting || loading}
+                      color="blue"
+                      onClick={() => {
+                        setCounting(true);
+                        countVotes(proposalDetails.id);
+                      }}
+                      text={!counting ? "Count Votes" : "Counting..."}
+                      theme="colored"
+                      loadingText="Counting"
+                    />
+                  </div>
+                )}
+    
+                {countDone && (
+                  <div className="countButton">
+                    <Button
+                      disabled={true}
+                      color="blue"
+                      text={"Count Done!"}
+                      theme="colored"
+                    />
+                  </div>
+                )}
+              </div>
+    
+              {latestVote && (
+                <div className="widgets">
+                  <Widget info={latestVote.votesUp} title="Votes For">
+                    <div className="extraWidgetInfo">
+                      <div className="extraTitle">{percUp}%</div>
+                      <div className="progress">
+                        <div
+                          className="progressPercentage"
+                          style={{ width: `${percUp}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </Widget>
+                  <Widget info={latestVote.votesDown} title="Votes Against">
+                    <div className="extraWidgetInfo">
+                      <div className="extraTitle">{percDown}%</div>
+                      <div className="progress">
+                        <div
+                          className="progressPercentage"
+                          style={{ width: `${percDown}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </Widget>
+                </div>
+              )}
+    
+              <div className="votesDiv">
+                <Table
+                  style={{ width: "60%" }}
+                  columnsConfig="90% 10%"
+                  data={votes}
+                  header={[<span>Address</span>, <span>Vote</span>]}
+                  pageSize={5}
+                />
+    
+                <Form
+                  isDisabled={deadline || hasVoted || loading}
+                  style={{
+                    width: "30%",
+                    height: "250px",
+                    border: "1px solid rgba(6, 158, 252, 0.2)",
+                  }}
+                  buttonConfig={{
+                    isLoading: sub,
+                    loadingText: "Casting Vote",
+                    text: "Vote",
+                    theme: "secondary",
+                  }}
+                  data={[
+                    {
+                      inputWidth: "100%",
+                      name: "Cast Vote",
+                      options: ["For", "Against"],
+                      type: "radios",
+                      validation: {
+                        required: true,
+                      },
+                    },
+                  ]}
+                  onSubmit={(e) => {
+                    if (e.data[0].inputResult[0] === "For") {
+                      // console.log("For");
+                      castVote(true);
+                    } else {
+                      castVote(false);
+                    }
+                    setSub(true);
+                  }}
+                  title="Cast Vote"
+                />
+              </div>
+            </div>
+          )}
+          <></>
+          <div className="voting"></div>
+        </>
+      );
 }
 
 export default Proposal;
