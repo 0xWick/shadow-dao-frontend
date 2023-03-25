@@ -2,6 +2,9 @@ import "./pages.css";
 import React, { useState } from "react";
 import "./pages.css";
 import { useAccount } from "wagmi";
+import { ethers } from "ethers";
+import axios from "axios";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Owner = () => {
@@ -443,6 +446,201 @@ const Owner = () => {
   // * Setup Chain & Contract Address
   const address = "0x80A6B117511c6527E57F25D04D9adfee23Ae1B0E";
 
+  // * Functions
+  async function withDrawFunds() {
+    const signer = new ethers.providers.Web3Provider(
+      window.ethereum
+    ).getSigner();
+
+    const daoVerifier = new ethers.Contract(address, ContractABI, signer);
+    // * Gas Calculation
+    // get max fees from gas station
+    let maxFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
+    let maxPriorityFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
+    try {
+      const { data } = await axios({
+        method: "get",
+        url: "https://gasstation-mumbai.matic.today/v2",
+      });
+      maxFeePerGas = ethers.utils.parseUnits(
+        Math.ceil(data.fast.maxFee) + "",
+        "gwei"
+      );
+      maxPriorityFeePerGas = ethers.utils.parseUnits(
+        Math.ceil(data.fast.maxPriorityFee) + "",
+        "gwei"
+      );
+    } catch {
+      // ignore
+    }
+
+    try {
+      const donateTxn = await daoVerifier.withdrawAll({
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit: "1000000",
+      });
+      await donateTxn.wait(2);
+      const HASH = donateTxn.hash;
+      const URL = BaseUrl + HASH;
+      setPolygonScan(URL);
+      toast.success("WithDrawl is Succesfull", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setWithDrawLoading(false);
+    } catch (error) {
+      toast.error("Transaction Failed!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    
+
+      setWithDrawLoading(false);
+    }
+  }
+
+  async function createNewMember(userPID) {
+    const signer = new ethers.providers.Web3Provider(
+      window.ethereum
+    ).getSigner();
+
+    const daoVerifier = new ethers.Contract(address, ContractABI, signer);
+    // * Gas Calculation
+    // get max fees from gas station
+    let maxFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
+    let maxPriorityFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
+    try {
+      const { data } = await axios({
+        method: "get",
+        url: "https://gasstation-mumbai.matic.today/v2",
+      });
+      maxFeePerGas = ethers.utils.parseUnits(
+        Math.ceil(data.fast.maxFee) + "",
+        "gwei"
+      );
+      maxPriorityFeePerGas = ethers.utils.parseUnits(
+        Math.ceil(data.fast.maxPriorityFee) + "",
+        "gwei"
+      );
+    } catch {
+      // ignore
+    }
+
+    try {
+      const donateTxn = await daoVerifier.newMembership(userPID, {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit: "1000000",
+      });
+      await donateTxn.wait(2);
+      const HASH = donateTxn.hash;
+      const URL = BaseUrl + HASH;
+      setPolygonScan(URL);
+      toast.success("New Membership Succesfull", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setSubNewMember(false);
+    } catch (error) {
+      toast.error("Transaction Failed!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
+
+      setSubNewMember(false);
+    }
+  }
+
+  async function rewokeMember(revokeAddress) {
+    const signer = new ethers.providers.Web3Provider(
+      window.ethereum
+    ).getSigner();
+
+    const daoVerifier = new ethers.Contract(address, ContractABI, signer);
+    // * Gas Calculation
+    // get max fees from gas station
+    let maxFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
+    let maxPriorityFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
+    try {
+      const { data } = await axios({
+        method: "get",
+        url: "https://gasstation-mumbai.matic.today/v2",
+      });
+      maxFeePerGas = ethers.utils.parseUnits(
+        Math.ceil(data.fast.maxFee) + "",
+        "gwei"
+      );
+      maxPriorityFeePerGas = ethers.utils.parseUnits(
+        Math.ceil(data.fast.maxPriorityFee) + "",
+        "gwei"
+      );
+    } catch {
+      // ignore
+    }
+
+    try {
+      const donateTxn = await daoVerifier.revokeMembership(revokeAddress, {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit: "1000000",
+      });
+      await donateTxn.wait(2);
+      const HASH = donateTxn.hash;
+      const URL = BaseUrl + HASH;
+      setPolygonScan(URL);
+      toast.success("Membership Revoked Succesfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setSubRevokeMember(false);
+    } catch (error) {
+      toast.error("Transaction Failed!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      
+
+      setSubRevokeMember(false);
+    }
+  }
 
   return (
     <div>Owner Page</div>
