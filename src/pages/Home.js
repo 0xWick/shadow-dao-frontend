@@ -44,7 +44,7 @@ const Home = () => {
   // * Donations of current user
   const [donation, setDonation] = useState(0);
   // * Check if User verified or Not
-  const [isMember, setIsMember] = useState(true);
+  const [isMember, setIsMember] = useState(false);
 
   // * PassRate of Proposals
   const [passRate, setPassRate] = useState(0);
@@ -450,7 +450,6 @@ const Home = () => {
 
           if (ownerAddress === userAddress) {
             setIsOwner(true);
-            setIsMember(true);
           } else {
             const functionName = "isMember";
 
