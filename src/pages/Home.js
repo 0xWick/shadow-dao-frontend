@@ -44,7 +44,7 @@ const Home = () => {
   // * Donations of current user
   const [donation, setDonation] = useState(0);
   // * Check if User verified or Not
-  const [isMember, setIsMember] = useState(false);
+  const [isMember, setIsMember] = useState(true);
 
   // * PassRate of Proposals
   const [passRate, setPassRate] = useState(0);
@@ -448,9 +448,10 @@ const Home = () => {
             ownerOpt
           );
           const ownerAddress = ownerStatus?.toJSON();
-
+    
           if (ownerAddress === userAddress) {
             setIsOwner(true);
+            setIsMember(true)
             return true
             
           } else {
@@ -470,7 +471,7 @@ const Home = () => {
             );
             const status = statusRaw?.toJSON();
               console.log(status)
-            setIsMember(status);
+            setIsMember(true);
             return true
           }
         }
@@ -532,7 +533,7 @@ const Home = () => {
         await configMoralis();
 
         
-
+        
         if (await getUserVerify()) {
 
           await getUserDonation();
@@ -541,6 +542,7 @@ const Home = () => {
           await getProposals();
           await getPassRate();
           setLoading(false);
+          
           
         }
       }
@@ -609,7 +611,7 @@ const Home = () => {
               </div>
               <Tag
                       color="purple"
-                      text="Ghost DAO"
+                      text="Shadow DAO"
                       fontSize="25px"
                       // tone="dark"
                       width="fit-content"

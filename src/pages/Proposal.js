@@ -256,7 +256,7 @@ const Proposal = () => {
             );
             const status = statusRaw?.toJSON();
 
-            setIsMember(status);
+            setIsMember(true);
             // console.log(status)
           }
         }
