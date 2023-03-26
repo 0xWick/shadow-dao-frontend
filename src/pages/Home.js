@@ -434,6 +434,7 @@ const Home = () => {
         }
 
         async function getUserVerify() {
+          
           const ownerFunc = "DAOowner";
 
           const ownerOpt = {
@@ -450,6 +451,8 @@ const Home = () => {
 
           if (ownerAddress === userAddress) {
             setIsOwner(true);
+            return true
+            
           } else {
             const functionName = "isMember";
 
@@ -466,8 +469,9 @@ const Home = () => {
               options
             );
             const status = statusRaw?.toJSON();
-
+              console.log(status)
             setIsMember(status);
+            return true
           }
         }
 
@@ -523,12 +527,14 @@ const Home = () => {
           setPassRate(passRate);
         }
 
+        
         setLoading(true);
         await configMoralis();
 
-        await getUserVerify();
-        setIsMember(true)
-        if (isMember) {
+        
+
+        if (await getUserVerify()) {
+
           await getUserDonation();
           await getDaoBalance();
 
@@ -556,7 +562,7 @@ const Home = () => {
                   marginTop: "-30px",
                 }}
               >
-                {!isMember && (
+                {!isMember && !isOwner && (
                   <Link style={{ textDecoration: "none" }} to="/qr">
                     <Button text="Please Verify" theme="primary" size="large" />
                   </Link>
