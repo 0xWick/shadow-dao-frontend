@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./pages.css";
 import { TabList, Tab, Widget, Tag, Table, Form, Button } from "web3uikit";
 import { Link } from "react-router-dom";
-import matic from "./images/Polygon_Faucet.png";
+import matic from "../images/Polygon_Faucet.png";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import axios from "axios";
@@ -12,7 +12,6 @@ import {ContractAddress, ContractABI} from "./config.js";
 
 
 const Moralis = require("moralis").default;
-const { EvmChain } = require("@moralisweb3/common-evm-utils");
 
 
 const Home = () => {
@@ -73,7 +72,7 @@ const Home = () => {
 
   // * Setup Chain & Contract Address
   const address = ContractAddress
-  const chain = EvmChain.MUMBAI;
+  const chain = 80001;
 
   // * Generic Functions
 
