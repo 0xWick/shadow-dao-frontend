@@ -1,70 +1,56 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Live DApp Link: https://polygon-id-frontend.vercel.app/
 
-## Available Scripts
+## `Here for the verification Lifecycle: `
 
-In the project directory, you can run:
+### `Shadow DAO`
 
-### `npm start`
+-> Member creates a Proposal and present it to the DAO
+-> DAO members vote for/against on the proposal
+-> After the Deadline for voting has passed, the OWNER can countVotes and end the proposal
+-> If Passed: The Required Amount is transfered to the Proposer. And if Rejected: Proposer get's nothing
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Things to Try
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `You can:`
 
-### `npm test`
+-> Create Proposals
+![image](https://user-images.githubusercontent.com/69587947/227927145-6e5d4cd3-7024-4249-9d44-99e501bbc295.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+-> Vote on Proposals
+![image](https://user-images.githubusercontent.com/69587947/227927923-89613f9a-b4c2-46af-8086-39e58edffc99.png)
 
-### `npm run build`
+-> Donate to the DAO
+![image](https://user-images.githubusercontent.com/69587947/227927355-c300484e-4805-44ed-8a75-100f7034cdf1.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `Only Owner:`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. All the above, and
+2. Count Votes (Change the Proposal Status to Rejected/Passed)
+![image](https://user-images.githubusercontent.com/69587947/227927454-507f0d61-9ece-4176-8988-bdb24239a759.png)
+![image](https://user-images.githubusercontent.com/69587947/227927815-08f55775-9edf-45fb-be70-9228fae76ef9.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### DAO transfered the "Required Amount" to the Proposer
+![image](https://user-images.githubusercontent.com/69587947/227928076-1f6ee474-2695-4ecc-b8b5-ca45111355a2.png)
 
-### `npm run eject`
+# `3. Owner Also gets an Owner Panel`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Owner Panel:
+![image](https://user-images.githubusercontent.com/69587947/227928196-f8cf1f22-fefd-46cf-b356-d098b3bcb7d5.png)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. A `"Withdraw"` button for withdrawing all funds in the DAO (A multisig can be added for security but since we have the ID of the Owner its not an issue)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. `"Issue New Membership"` , Enter a User's PID(in uint256, you can find it in the Event Logs named "userRegistered" Event) with which the user registered an Eth Address. And "Remove" both (PID & Eth Address) from already registered. Hence, issuing a New Membership because that PID can now register a new Eth Address.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. `"Revoke Membership"` , Enter an Eth Address to kick him from the DAO's verified Members. Since, the PID is not removed from the registered PID's. This user can't register a new Eth Address.
 
-## Learn More
+## Verification Checks
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. One PID can't register more than one Eth Address (unless issued a New Membership)
+![image](https://user-images.githubusercontent.com/69587947/208858843-0b5aa396-fa01-4794-93ce-82d73de2bec1.png)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. If someone else tries to issue a NewMembership
+![image](https://user-images.githubusercontent.com/69587947/208859500-20f1d19d-3372-499c-ae69-dc23852076a7.png)
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. Duplicate Registration Check
+![image](https://user-images.githubusercontent.com/69587947/208859716-030c555d-aebb-411a-ad11-1cdffc526b4d.png)
