@@ -470,7 +470,7 @@ const Home = () => {
               options
             );
             const status = statusRaw?.toJSON();
-              console.log(status)
+              // console.log(status)
             setIsMember(true);
             return true
           }
