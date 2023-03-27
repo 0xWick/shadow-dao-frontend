@@ -1,7 +1,7 @@
 
 # Live DApp Link: https://polygon-id-frontend.vercel.app/
 
-## `Here for the verification Lifecycle: `
+## `Here for the verification Lifecycle: https://github.com/0xWick/Shadow-DAO/blob/main/README.md`https://github.com/0xWick/Shadow-DAO/blob/main/README.md
 
 ### `Shadow DAO`
 
