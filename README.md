@@ -1,6 +1,6 @@
 
 # Live DApp Link: https://polygon-id-frontend.vercel.app/
-
+## Smart contracts: https://github.com/0xWick/Shadow-DAO/tree/main/contracts
 ## `ZK proof Verification Lifecyle:`https://github.com/0xWick/Shadow-DAO/blob/main/README.md
 
 ### `Shadow DAO`
